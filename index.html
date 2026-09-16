@@ -261,7 +261,7 @@ document.getElementById('lessonForm').onsubmit=e=>{
   toast('AI lesson draft generated. Review before teaching.');
 };
 function adaptLesson(){
-  const choice=prompt('How should EDUPlan AI adapt this lesson?\\n\\nExamples: simpler, more challenging, large class, limited resources, more interactive');
+ const choice=prompt('How should EDUPlan AI adapt this lesson?\n\nExamples: simpler, more challenging, large class, limited resources, more interactive');const choice=prompt('How should EDUPlan AI adapt this lesson?\n\nExamples: simpler, more challenging, large class, limited resources, more interactive'); 
   if(!choice)return;
   const box=document.getElementById('currentLesson');
   const note=document.createElement('div'); note.className='notice';
