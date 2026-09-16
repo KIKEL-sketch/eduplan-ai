@@ -251,7 +251,7 @@ function lessonHTML(data){
 document.getElementById('lessonForm').onsubmit=e=>{
   e.preventDefault();
   const s=getSettings();
-  const d={
+ const d={
   subject:document.getElementById('subject').value,
   level:document.getElementById('level').value,
   topic:document.getElementById('topic').value,
@@ -262,7 +262,7 @@ document.getElementById('lessonForm').onsubmit=e=>{
   document.getElementById('lessonResult').innerHTML=lessonHTML(d);
   document.getElementById('lessonResult').scrollIntoView({behavior:'smooth'});
   toast('AI lesson draft generated. Review before teaching.');
-};
+}; 
 function adaptLesson(){
  const choice=prompt('How should EDUPlan AI adapt this lesson?\n\nExamples: simpler, more challenging, large class, limited resources, more interactive');const choice=prompt('How should EDUPlan AI adapt this lesson?\n\nExamples: simpler, more challenging, large class, limited resources, more interactive'); 
   if(!choice)return;
