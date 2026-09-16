@@ -251,11 +251,13 @@ function lessonHTML(data){
 document.getElementById('lessonForm').onsubmit=e=>{
   e.preventDefault();
   const s=getSettings();
-  const d={subject:subject.value,level:level.value,topic:topic.value,subtopic:subtopic.value,duration:duration.value,size:size.value,
-    ability:ability.value,res:resources().join(', ')||'available classroom resources',instructions:instructions.value,
-    internet:internet.value,projector:projector.value,computers:computers.value,textbooks:textbooks.value,
-    chalkboard:chalkboard.value,otherResources:otherResources.value,
-    country:s.country,curriculum:s.curriculum,language:s.language};
+  const d={
+  subject:document.getElementById('subject').value,
+  level:document.getElementById('level').value,
+  topic:document.getElementById('topic').value,
+  subtopic:document.getElementById('subtopic').value,
+  duration:document.getElementById('duration').value,
+  size:document.getElementById('size').value,
   document.getElementById('lessonResult').innerHTML=lessonHTML(d);
   document.getElementById('lessonResult').scrollIntoView({behavior:'smooth'});
   toast('AI lesson draft generated. Review before teaching.');
