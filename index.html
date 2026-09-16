@@ -258,6 +258,7 @@ document.getElementById('lessonForm').onsubmit=e=>{
   subtopic:document.getElementById('subtopic').value,
   duration:document.getElementById('duration').value,
   size:document.getElementById('size').value,
+    ability:ability.value,res:resources().join(', ')||'available classroom resources',instructions:instructions.value,
   document.getElementById('lessonResult').innerHTML=lessonHTML(d);
   document.getElementById('lessonResult').scrollIntoView({behavior:'smooth'});
   toast('AI lesson draft generated. Review before teaching.');
