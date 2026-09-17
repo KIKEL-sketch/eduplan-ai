@@ -258,11 +258,11 @@ const d={
   subtopic:document.getElementById('subtopic').value,
   duration:document.getElementById('duration').value,
   size:document.getElementById('size').value,
-    ability:ability.value,res:resources().join(', ')||'available classroom resources',instructions:instructions.value,
+    ability:ability.value,res:resources().join(', ')||'available classroom resources',instructions:instructions.value,};
   document.getElementById('lessonResult').innerHTML=lessonHTML(d);
   document.getElementById('lessonResult').scrollIntoView({behavior:'smooth'});
   toast('AI lesson draft generated. Review before teaching.');
-};  
+}  
 function adaptLesson(){
  const choice=prompt('How should EDUPlan AI adapt this lesson?\n\nExamples: simpler, more challenging, large class, limited resources, more interactive');const choice=prompt('How should EDUPlan AI adapt this lesson?\n\nExamples: simpler, more challenging, large class, limited resources, more interactive'); 
   if(!choice)return;
