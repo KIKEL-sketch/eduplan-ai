@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDUPlan AI — Prototype 2</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+.app{min-height:100vh;display:flex}.side{width:240px;background:#172554;color:#fff;padding:22px 15px;position:fixed;top:0;bottom:0}
+.brand{font-size:24px;font-weight:800;margin-bottom:25px}.brand small{display:block;font-size:12px;font-weight:400;opacity:.75;margin-top:4px}
+nav button{display:block;width:100%;border:0;background:transparent;color:#fff;text-align:left;padding:13px;border-radius:9px;margin:4px 0;cursor:pointer}
+nav button:hover,nav button.active{background:#2b407c}.main{margin-left:240px;width:calc(100% - 240px);padding:25px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.top h1{margin:0}.badge{background:#e8eefc;padding:8px 12px;border-radius:18px;font-size:12px}
+.card{background:#fff;border-radius:15px;padding:22px;margin-bottom:18px;box-shadow:0 4px 18px rgba(0,0,0,.06)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}label{font-weight:700;font-size:14px;display:block;margin-bottom:6px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #d5ddea;border-radius:8px;background:#fff}textarea{min-height:80px}
+.full{grid-column:1/-1}.primary,.secondary{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}.primary{background:#2563eb;color:#fff}.secondary{background:#e9eef5;color:#172033}
+.actions{display:flex;gap:9px;margin-top:17px;flex-wrap:wrap}.result{margin-top:20px;padding:17px;background:#f8fbff;border-left:4px solid #2563eb;border-radius:9px}
+.block{background:#fff;border:1px solid #e0e6ef;border-radius:8px;padding:13px;margin:10px 0}.block strong{display:block;margin-bottom:5px}.muted{color:#687386;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.stat{background:#fff;border-radius:13px;padding:17px}.stat b{display:block;font-size:25px;margin-top:5px}
+.hidden{display:none}@media(max-width:750px){.app{display:block}.side{position:static;width:100%}.main{margin:0;width:100%;padding:15px}.grid,.stats{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side"><div class="brand">EDUPlan AI<small>Teacher planning assistant</small></div>
+<nav>
+<button class="active" data-page="dashboard">🏠 Dashboard</button>
+<button data-page="lesson">📝 Create Lesson</button>
+<button data-page="scheme">📚 Scheme of Work</button>
+<button data-page="assessment">🧪 Assessment</button>
+<button data-page="resources">📖 Learning Resources</button>
+<button data-page="saved">💾 Saved Lessons</button>
+</nav></aside>
+<main class="main">
+<div class="top"><h1 id="title">Teacher Dashboard</h1><span class="badge">Prototype 2</span></div>
+
+<section id="dashboard" class="page">
+<div class="stats"><div class="stat">Lessons created<b id="lc">0</b></div><div class="stat">Assessments<b id="ac">0</b></div><div class="stat">Saved lessons<b id="sc">0</b></div></div>
+<div class="card"><h2>Welcome to EDUPlan AI</h2><p>Plan lessons and classroom activities from one teacher dashboard.</p><p class="muted">Designed for classrooms where students do not need phones. Core lesson generation works directly in the browser.</p><button class="primary" onclick="showPage('lesson')">Create a Lesson →</button></div>
+</section>
+
+<section id="lesson" class="page hidden"><div class="card"><h2>Create Lesson</h2><p class="muted">Enter details and generate a structured lesson instantly.</p>
+<div class="grid">
+<div><label>Subject</label><input id="subject" value="English"></div>
+<div><label>Class / Level</label><input id="level" value="Form 2"></div>
+<div><label>Topic</label><input id="topic" value="Adjectives"></div>
+<div><label>Sub-topic</label><input id="subtopic" value="Types of adjectives"></div>
+<div><label>Duration (minutes)</label><input id="duration" type="number" value="40"></div>
+<div><label>Class size</label><input id="size" type="number" value="40"></div>
+<div><label>Learner level</label><select id="ability"><option>Average</option><option>Mixed ability</option><option>Needs support</option><option>Advanced</option></select></div>
+<div><label>Internet access?</label><select id="internet"><option>No</option><option>Yes</option></select></div>
+<div><label>Textbooks?</label><select id="textbooks"><option>Yes</option><option>No</option></select></div>
+<div><label>Chalkboard?</label><select id="chalkboard"><option>Yes</option><option>No</option></select></div>
+<div class="full"><label>Teacher instructions</label><textarea id="instructions" placeholder="Optional notes"></textarea></div>
+</div>
+<div class="actions"><button class="primary" id="generate">✨ Generate Lesson</button><button class="secondary" id="clear">Clear</button></div>
+<div id="lessonResult"></div></div></section>
+
+<section id="scheme" class="page hidden"><div class="card"><h2>Scheme of Work</h2><p>This module is prepared for the next development stage.</p></div></section>
+<section id="assessment" class="page hidden"><div class="card"><h2>Assessment Generator</h2><label>Topic</label><input id="atopic" value="Adjectives"><div class="actions"><button class="primary" onclick="assessment()">Generate Assessment</button></div><div id="ares"></div></div></section>
+<section id="resources" class="page hidden"><div class="card"><h2>Learning Resources</h2><label>Topic</label><input id="rtopic" value="Adjectives"><div class="actions"><button class="primary" onclick="resources()">Generate Resources</button></div><div id="rres"></div></div></section>
+<section id="saved" class="page hidden"><div class="card"><h2>Saved Lessons</h2><div id="savedList"></div></div></section>
+</main></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const titles={dashboard:'Teacher Dashboard',lesson:'Create Lesson',scheme:'Scheme of Work',assessment:'Assessment Generator',resources:'Learning Resources',saved:'Saved Lessons'};
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$(p).classList.remove('hidden');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));$('title').textContent=titles[p];window.scrollTo(0,0)}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+
+function generateLesson(){
+const subject=$('subject').value.trim()||'Subject',level=$('level').value.trim()||'Class',topic=$('topic').value.trim()||'Topic',subtopic=$('subtopic').value.trim()||'General';
+const duration=Math.max(10,parseInt($('duration').value)||40),size=parseInt($('size').value)||40,ability=$('ability').value;
+const intro=Math.round(duration*.15),teach=Math.round(duration*.3),activity=Math.round(duration*.35),assess=duration-intro-teach-activity;
+$('lessonResult').innerHTML='<div class="result"><h3>'+subject+': '+topic+'</h3>'+
+'<p><b>Class:</b> '+level+' &nbsp; <b>Sub-topic:</b> '+subtopic+' &nbsp; <b>Duration:</b> '+duration+' minutes</p>'+
+'<p><b>Class size:</b> '+size+' &nbsp; <b>Learner level:</b> '+ability+'</p>'+
+'<div class="block"><strong>Learning objectives</strong>Learners should explain '+subtopic.toLowerCase()+', identify relevant examples and apply the concept correctly.</div>'+
+'<div class="block"><strong>Introduction — '+intro+' minutes</strong>Activate prior knowledge with familiar examples and short oral questions.</div>'+
+'<div class="block"><strong>Teacher presentation — '+teach+' minutes</strong>Explain the key concept step by step and write definitions and examples on the chalkboard.</div>'+
+'<div class="block"><strong>Learner activity — '+activity+' minutes</strong>Learners work individually or in pairs to identify examples and construct their own sentences.</div>'+
+'<div class="block"><strong>Assessment and closure — '+assess+' minutes</strong>Use a short exit task, review answers and correct misconceptions.</div>'+
+'<div class="block"><strong>Resources</strong>Chalkboard: '+$('chalkboard').value+'. Textbook: '+$('textbooks').value+'. Internet: '+$('internet').value+'. Student phones are not required.</div>'+
+($('instructions').value.trim()?'<div class="block"><strong>Teacher notes</strong>'+$('instructions').value.trim()+'</div>':'')+
+'<div class="actions"><button class="primary" onclick="saveLesson()">💾 Save Lesson</button><button class="secondary" onclick="window.print()">Print</button></div></div>';
+localStorage.setItem('lastLesson',JSON.stringify({subject,level,topic,subtopic,duration}));
+updateStats();
+}
+$('generate').addEventListener('click',generateLesson);
+$('clear').addEventListener('click',()=>$('lessonResult').innerHTML='');
+
+function saveLesson(){let x=JSON.parse(localStorage.getItem('lastLesson')||'{}'),a=JSON.parse(localStorage.getItem('savedLessons')||'[]');a.unshift({...x,date:new Date().toLocaleString()});localStorage.setItem('savedLessons',JSON.stringify(a.slice(0,20)));renderSaved();updateStats();alert('Lesson saved successfully.')}
+function renderSaved(){let a=JSON.parse(localStorage.getItem('savedLessons')||'[]');$('savedList').innerHTML=a.length?a.map(x=>'<div class="block"><strong>'+x.subject+': '+x.topic+'</strong>'+x.level+' • '+x.duration+' minutes<br><span class="muted">'+x.date+'</span></div>').join(''):'<p class="muted">No lessons saved yet.</p>'}
+function assessment(){$('ares').innerHTML='<div class="result"><h3>Quick Assessment: '+($('atopic').value||'Topic')+'</h3><ol><li>Define the key concept.</li><li>Give two examples.</li><li>Use one example in a sentence.</li><li>Explain one common mistake.</li><li>Complete a short application task.</li></ol></div>';localStorage.setItem('assessments',(+localStorage.getItem('assessments')||0)+1);updateStats()}
+function resources(){$('rres').innerHTML='<div class="result"><h3>Classroom Resources: '+($('rtopic').value||'Topic')+'</h3><ul><li>Board summary</li><li>Pair-work activity</li><li>Individual practice</li><li>Exit ticket</li><li>Homework revision prompt</li></ul></div>'}
+function updateStats(){$('lc').textContent=localStorage.getItem('lastLesson')?'1':'0';$('ac').textContent=localStorage.getItem('assessments')||'0';$('sc').textContent=JSON.parse(localStorage.getItem('savedLessons')||'[]').length}
+renderSaved();updateStats();
+</script>
+</body></html>
